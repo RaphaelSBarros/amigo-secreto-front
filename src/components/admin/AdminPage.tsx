@@ -10,10 +10,13 @@ import { Event } from "@/types/Event";
 import { useEffect, useState } from "react";
 import { ItemButton } from "./ItemButton";
 import { FaPlus } from "react-icons/fa";
+import { ModalScreens } from "@/types/ModalScreens";
+import { Modal } from "./Modal";
 
 export const AdminPage = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(false);
+  const [modalScreen, setModalScreen] = useState<ModalScreens>(null);
 
   const loadEvents = async () => {
     setLoading(true);
@@ -30,7 +33,7 @@ export const AdminPage = () => {
     <div>
       <div className="p-3 flex items-center">
         <h1 className="text-2xl flex-1">Eventos</h1>
-        <ItemButton IconElement={FaPlus} onClick={() => {}} />
+        <ItemButton IconElement={FaPlus} onClick={() => setModalScreen("add")} />
       </div>
       <div className="my-3">
         {!loading &&
@@ -51,6 +54,11 @@ export const AdminPage = () => {
           </>
         )}
       </div>
+      {modalScreen && 
+        <Modal onClose={() => setModalScreen(null)}>
+          Tipo: {modalScreen}
+        </Modal>
+      }
     </div>
   );
 };
