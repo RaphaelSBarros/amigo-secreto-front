@@ -13,6 +13,7 @@ export const EventItem = ({ item, refreshAction, openModal }: Props) => {
   const handleDeleteButton = async () => {
     if(confirm("Tem certeza que deseja excluir este evento?")){
       await api.deleteEvent(item.id)
+      refreshAction()
     }
   };
 

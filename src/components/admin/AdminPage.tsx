@@ -12,6 +12,7 @@ import { ItemButton } from "./ItemButton";
 import { FaPlus } from "react-icons/fa";
 import { ModalScreens } from "@/types/ModalScreens";
 import { Modal } from "./Modal";
+import { EventAdd } from "./events/EventAdd";
 
 export const AdminPage = () => {
   const [events, setEvents] = useState<Event[]>([]);
@@ -19,6 +20,7 @@ export const AdminPage = () => {
   const [modalScreen, setModalScreen] = useState<ModalScreens>(null);
 
   const loadEvents = async () => {
+    setModalScreen(null);
     setLoading(true);
     const eventList = await api.getEvents();
     setLoading(false);
@@ -33,7 +35,10 @@ export const AdminPage = () => {
     <div>
       <div className="p-3 flex items-center">
         <h1 className="text-2xl flex-1">Eventos</h1>
-        <ItemButton IconElement={FaPlus} onClick={() => setModalScreen("add")} />
+        <ItemButton
+          IconElement={FaPlus}
+          onClick={() => setModalScreen("add")}
+        />
       </div>
       <div className="my-3">
         {!loading &&
@@ -54,11 +59,11 @@ export const AdminPage = () => {
           </>
         )}
       </div>
-      {modalScreen && 
+      {modalScreen && (
         <Modal onClose={() => setModalScreen(null)}>
-          Tipo: {modalScreen}
+          {modalScreen === "add" && <EventAdd refreshAction={loadEvents} />}
         </Modal>
-      }
+      )}
     </div>
   );
 };
