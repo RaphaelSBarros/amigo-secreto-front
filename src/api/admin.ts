@@ -13,9 +13,17 @@ export const login = async (password: string) => {
 
 export const getEvents = async () => {
   const token = getCookie("token");
-  console.log(token)
+  console.log(token);
   const json = await req.get("/admin/events", {
     headers: { Authorization: `Token ${token}` },
   });
-  return json.data.events as Event[] ?? [];
+  return (json.data.events as Event[]) ?? [];
+};
+
+export const deleteEvent = async (id: number) => {
+  const token = getCookie("token");
+  const json = await req.delete(`/admin/events/${id}`, {
+    headers: { Authorization: `Token ${token}` },
+  });
+  return !json.data.error;
 };
