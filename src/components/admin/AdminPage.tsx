@@ -1,6 +1,7 @@
 "use client";
 
 import * as api from "@/api/admin";
+import { EventItem, EventItemNotFound, EventItemPlaceHolder } from "@/app/admin/events/EventItem";
 import { Event } from "@/types/Event";
 import { useEffect, useState } from "react";
 
@@ -29,8 +30,13 @@ export const AdminPage = () => {
         {!loading &&
           events.length > 0 &&
           events.map((item) => <div key={item.id}>{item.title}</div>)}
-        {!loading && events.length === 0 && <div>Nada encontrado</div>}
-        {loading && <div>Carregando...</div>}
+        {!loading && events.length === 0 && <EventItemNotFound />}
+        {loading &&
+          <>
+          <EventItemPlaceHolder />
+          <EventItemPlaceHolder />
+          </>
+        }
       </div>
     </div>
   );
