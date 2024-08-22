@@ -30,15 +30,19 @@ export const AdminPage = () => {
     <div>
       <div className="p-3 flex items-center">
         <h1 className="text-2xl flex-1">Eventos</h1>
-        <ItemButton
-          IconElement={FaPlus}
-          onClick={() => {}}
-        />
+        <ItemButton IconElement={FaPlus} onClick={() => {}} />
       </div>
       <div className="my-3">
         {!loading &&
           events.length > 0 &&
-          events.map((item) => <div key={item.id}>{item.title}</div>)}
+          events.map((item) => (
+            <EventItem
+              key={item.id}
+              item={item}
+              refreshAction={loadEvents}
+              openModal={() => {}}
+            />
+          ))}
         {!loading && events.length === 0 && <EventItemNotFound />}
         {loading && (
           <>
