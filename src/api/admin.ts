@@ -30,7 +30,24 @@ export const addEvent = async (data: AddEventData): Promise<Event | false> => {
   const json = await req.post(`/admin/events`, data, {
     headers: { Authorization: `Token ${token}` },
   });
-  return json.data.event as Event ?? false;
+  return (json.data.event as Event) ?? false;
+};
+
+type UpdateEventData = {
+  title?: string;
+  description?: string;
+  grouped?: boolean;
+  status?: boolean;
+};
+export const updateEvent = async (
+  id: number,
+  data: UpdateEventData
+): Promise<Event | false> => {
+  const token = getCookie("token");
+  const json = await req.put(`/admin/events/${id}`, data, {
+    headers: { Authorization: `Token ${token}` },
+  });
+  return (json.data.event as Event) ?? false;
 };
 
 export const deleteEvent = async (id: number) => {
