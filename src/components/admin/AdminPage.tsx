@@ -13,11 +13,13 @@ import { FaPlus } from "react-icons/fa";
 import { ModalScreens } from "@/types/ModalScreens";
 import { Modal } from "./Modal";
 import { EventAdd } from "./events/EventAdd";
+import { EventEdit } from "./events/EventEdit";
 
 export const AdminPage = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(false);
   const [modalScreen, setModalScreen] = useState<ModalScreens>(null);
+  const [selectedEvent, setSelectedEvent] = useState<Event>();
 
   const loadEvents = async () => {
     setModalScreen(null);
@@ -26,6 +28,11 @@ export const AdminPage = () => {
     setLoading(false);
     setEvents(eventList);
   };
+
+  const editEvent = (event: Event) => {
+    setSelectedEvent(event);
+    setModalScreen('edit')
+  }
 
   useEffect(() => {
     loadEvents();
@@ -48,7 +55,7 @@ export const AdminPage = () => {
               key={item.id}
               item={item}
               refreshAction={loadEvents}
-              openModal={() => {}}
+              openModal={event => editEvent(event)}
             />
           ))}
         {!loading && events.length === 0 && <EventItemNotFound />}
@@ -62,6 +69,7 @@ export const AdminPage = () => {
       {modalScreen && (
         <Modal onClose={() => setModalScreen(null)}>
           {modalScreen === "add" && <EventAdd refreshAction={loadEvents} />}
+          {modalScreen === "edit" && <EventEdit event={selectedEvent} refreshAction={loadEvents} />}
         </Modal>
       )}
     </div>
