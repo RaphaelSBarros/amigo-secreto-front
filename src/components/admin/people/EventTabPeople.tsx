@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { GroupItemNotFound, GroupItemPlaceholder } from '../groups/GroupItem';
 import { PersonComplete } from '@/types/PersonComplete';
 import { PersonItemNotFound, PersonItemPlaceholder } from './PersonItem';
+import { PersonAdd } from './PersonAdd';
 
 
 type Props = {
@@ -26,8 +27,10 @@ export const EventTabPeople = ({ eventId }: Props) => {
     loadGroups();
   }, []);
 
+  // People
   const [people, setPeople] = useState<PersonComplete[]>([]);
   const [peopleLoading, setPeopleLoading] = useState(false);
+  const [selectedPerson, setSelectedPerson] = useState<PersonComplete>();
   const loadPeople = async () => {
     if(selectedGroupId <= 0) return;
     setPeople([]);
@@ -59,7 +62,15 @@ export const EventTabPeople = ({ eventId }: Props) => {
       </div>
       {selectedGroupId > 0 &&
         <>
-          <div className='border border-dashed p-3 my-3'>Add/Edit</div>
+          <div className='border border-dashed p-3 my-3'>
+            {!selectedPerson && 
+              <PersonAdd
+                eventId={eventId}
+                groupId={selectedGroupId}
+                refreshAction={loadPeople}
+              /> 
+            }
+          </div>
           {!peopleLoading && people.length > 0 && people.map(item => (
             <div key={item.id}>{item.name}</div>
           ))}
