@@ -5,6 +5,7 @@ import { GroupItemNotFound, GroupItemPlaceholder } from '../groups/GroupItem';
 import { PersonComplete } from '@/types/PersonComplete';
 import { PersonItem, PersonItemNotFound, PersonItemPlaceholder } from './PersonItem';
 import { PersonAdd } from './PersonAdd';
+import { PersonEdit } from './PersonEdit';
 
 
 type Props = {
@@ -77,6 +78,12 @@ export const EventTabPeople = ({ eventId }: Props) => {
                 groupId={selectedGroupId}
                 refreshAction={loadPeople}
               /> 
+            }
+            {selectedPerson &&
+              <PersonEdit
+                person={selectedPerson}
+                refreshAction={loadPeople}
+              />
             }
           </div>
           {!peopleLoading && people.length > 0 && people.map(item => (
