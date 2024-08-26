@@ -2,6 +2,8 @@ import * as api from '@/api/admin'
 import { Group } from '@/types/Group';
 import { useEffect, useState } from 'react';
 import { GroupItemNotFound, GroupItemPlaceholder } from '../groups/GroupItem';
+import { PersonComplete } from '@/types/PersonComplete';
+import { PersonItemNotFound, PersonItemPlaceholder } from './PersonItem';
 
 
 type Props = {
@@ -9,7 +11,7 @@ type Props = {
 }
 export const EventTabPeople = ({ eventId }: Props) => {
   const [groups, setGroups] = useState<Group[]>([])
-  const [selectGroupId, setSelectedGroupId] = useState(0);
+  const [selectedGroupId, setSelectedGroupId] = useState(0);
   const [groupLoading, setGroupLoading] = useState(true);
 
   const loadGroups = async () => {
@@ -23,6 +25,20 @@ export const EventTabPeople = ({ eventId }: Props) => {
   useEffect(() => {
     loadGroups();
   }, []);
+
+  const [people, setPeople] = useState<PersonComplete[]>([]);
+  const [peopleLoading, setPeopleLoading] = useState(false);
+  const loadPeople = async () => {
+    if(selectedGroupId <= 0) return;
+    setPeople([]);
+    setPeopleLoading(true);
+    const peopleList = await api.getPeople(eventId, selectedGroupId);
+    setPeopleLoading(false)
+    setPeople(peopleList);
+  }
+  useEffect(() => {
+    loadPeople();
+  }, [selectedGroupId])
 
   return (
     <div>
@@ -41,6 +57,21 @@ export const EventTabPeople = ({ eventId }: Props) => {
         {groupLoading && <GroupItemPlaceholder /> }
         {!groupLoading && groups.length === 0 && <GroupItemNotFound />}
       </div>
+      {selectedGroupId > 0 &&
+        <>
+          <div className='border border-dashed p-3 my-3'>Add/Edit</div>
+          {!peopleLoading && people.length > 0 && people.map(item => (
+            <div key={item.id}>{item.name}</div>
+          ))}
+          {peopleLoading &&
+            <>
+              <PersonItemPlaceholder />
+              <PersonItemPlaceholder />
+            </>
+          }
+          {!peopleLoading && people.length === 0 && <PersonItemNotFound />}
+        </>
+      }
     </div>
   )
 }
