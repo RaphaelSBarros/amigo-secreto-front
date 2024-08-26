@@ -3,7 +3,7 @@ import { Group } from '@/types/Group';
 import { useEffect, useState } from 'react';
 import { GroupItemNotFound, GroupItemPlaceholder } from '../groups/GroupItem';
 import { PersonComplete } from '@/types/PersonComplete';
-import { PersonItemNotFound, PersonItemPlaceholder } from './PersonItem';
+import { PersonItem, PersonItemNotFound, PersonItemPlaceholder } from './PersonItem';
 import { PersonAdd } from './PersonAdd';
 
 
@@ -16,6 +16,7 @@ export const EventTabPeople = ({ eventId }: Props) => {
   const [groupLoading, setGroupLoading] = useState(true);
 
   const loadGroups = async () => {
+
     setSelectedGroupId(0);
     setGroupLoading(true);
     const groupList = await api.getGroups(eventId);
@@ -30,15 +31,22 @@ export const EventTabPeople = ({ eventId }: Props) => {
   // People
   const [people, setPeople] = useState<PersonComplete[]>([]);
   const [peopleLoading, setPeopleLoading] = useState(false);
-  const [selectedPerson, setSelectedPerson] = useState<PersonComplete>();
+  const [selectedPerson, setSelectedPerson] = useState<PersonComplete | null>();
+
   const loadPeople = async () => {
     if(selectedGroupId <= 0) return;
+    setSelectedPerson(null)
     setPeople([]);
     setPeopleLoading(true);
     const peopleList = await api.getPeople(eventId, selectedGroupId);
     setPeopleLoading(false)
     setPeople(peopleList);
   }
+
+  const handleEditButton = (person: PersonComplete) => {
+    setSelectedPerson(person);
+  }
+
   useEffect(() => {
     loadPeople();
   }, [selectedGroupId])
@@ -72,7 +80,12 @@ export const EventTabPeople = ({ eventId }: Props) => {
             }
           </div>
           {!peopleLoading && people.length > 0 && people.map(item => (
-            <div key={item.id}>{item.name}</div>
+            <PersonItem 
+              key={item.id}
+              item={item}
+              refreshAction={loadPeople}
+              onEdit={handleEditButton}
+            />
           ))}
           {peopleLoading &&
             <>

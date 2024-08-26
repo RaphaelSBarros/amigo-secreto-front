@@ -1,7 +1,32 @@
-export const PersonItem = () => {
+import { PersonComplete } from "@/types/PersonComplete"
+import { ItemButton } from "../ItemButton";
+import { FaRegEdit, FaRegTrashAlt } from "react-icons/fa";
+import * as api from '@/api/admin'
+
+type Props = {
+  item: PersonComplete;
+  refreshAction: () => void;
+  onEdit: (person: PersonComplete) => void
+}
+export const PersonItem = ({ item, refreshAction, onEdit }: Props) => {
+  const handleDeleteButton = async () => {
+    if(confirm('Tem certeza que deseja excluir esta pessoa?')){
+      await api.deletePerson(item.id_event, item.id_group, item.id);
+      refreshAction();
+    }
+  }
+
   return (
-    <div>
-      ...
+    <div className="border border-gray-700 bg-gray-900 rounded p-3 mb-3 flex items-center">
+      <div className="flex-1">{item.name} (CPF: {item.cpf})</div>
+      <ItemButton
+        IconElement={FaRegEdit}
+        onClick={() => onEdit(item)}
+      />
+      <ItemButton
+        IconElement={FaRegTrashAlt}
+        onClick={handleDeleteButton}
+      />
     </div>
   )
 }
